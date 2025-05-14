@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Raleway:wght@300&display=swap');
+* {
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    font-family: "Outfit", serif;
+}
+p::selection, h5::selection, span::selection{
+    color: white;
+    background-color: #000;
+}
+
+.navbar img {
+    object-fit: cover;
+    width: 65px;
+    height: 65px;
+    border: 2px solid white;
+    user-select: none;
+}
+.logout:hover{
+    transition: all 0.5s ease-in-out;
+    font-weight: 900;
+    text-shadow: 0 0 8px var(--light-color);
+}
+@media (max-width: 600px) {
+    .navbar .container-fluid {
+        flex-direction: row; 
+        align-items: center;
+        justify-content: center;    
+    }
+    .row {
+        display: flex; /* Torna o contêiner flexível */
+        flex-wrap: wrap; /* Permite que os itens se ajustem se não houver espaço */
+        justify-content: center; /* Centraliza os itens */
+    }
+    .row .col-md-6 {
+        flex: 0 0 calc(50% - 10px); /* Cada card ocupa 50% do espaço com um pequeno gap */
+        margin: 5px; /* Adiciona espaço entre os itens */
+    }
+}
+

@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Raleway:wght@300&display=swap');
+* {
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    font-family: "Outfit", serif;
+}
+body {
+    background-color: #000;
+    color: #fff;
+}
+
+a::selection, p::selection, h2::selection, h3::selection, h5::selection, span::selection{
+    color: black;
+    background-color: white;
+}
+input::selection, textarea::selection{
+    color: white;
+    background-color: #000;
+}
+nav img, #carouselExample{
+    user-select: none;
+}
+.navbar {
+    background-color: #111;
+}
+.nav-item:hover {
+    transition: all 0.5s ease-in-out;
+    font-weight: 900;
+    text-shadow: 0 0 8px var(--light-color);
+}
+.carousel-inner img {
+    height: 400px;
+    object-fit: cover;
+    opacity: 0.5;
+}
+.card {
+    background-color: #111;
+    border: 1px solid #444;
+    color: #fff;
+}
+.btn-custom {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #666;
+}
+.btn-custom:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+footer {
+    background-color: #111;
+    padding: 20px 0;
+    text-align: center;
+    color: #aaa;
+}
