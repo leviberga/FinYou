@@ -85,19 +85,14 @@ public class CadastroServlet extends HttpServlet {
             Usuario novoUsuario = cadastroService.cadastrarNovoUsuario(nome, cpf, dataNascimento, email, senha);
 
             if (novoUsuario != null) {
-                // Cadastro bem-sucedido
-                // Você pode redirecionar para a página de login com uma mensagem de sucesso,
-                // ou diretamente para uma página de "cadastro realizado com sucesso".
-                // Usando Post-Redirect-Get pattern para evitar reenvio de formulário.
-                response.sendRedirect(request.getContextPath() + "/login.html?mensagem=cadastroSucesso");
-                // Ou, se quiser exibir uma mensagem mais elaborada em uma página de sucesso:
-                // request.setAttribute("mensagemSucesso", "Cadastro realizado com sucesso! Faça login para continuar.");
-                // RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp"); // ou uma pagina sucesso.jsp
-                // dispatcher.forward(request, response);
+                System.out.println("Cadastro de " + email + " bem-sucedido. Redirecionando para página de login.");
+
+                response.sendRedirect(request.getContextPath() + "/jsp/Login.jsp?mensagem=cadastroSucesso");
+
             } else {
                 // Este 'else' raramente será atingido se o service lançar exceções
                 request.setAttribute("mensagemErro", "Ocorreu um erro desconhecido durante o cadastro. Tente novamente.");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/cadastro.html"); // ou cadastro.jsp
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/Cadastro.jsp");
                 dispatcher.forward(request, response);
             }
 
@@ -105,12 +100,12 @@ public class CadastroServlet extends HttpServlet {
             // Erro de banco de dados
             e.printStackTrace(); // Logar o erro no servidor
             request.setAttribute("mensagemErro", "Erro no servidor ao tentar realizar o cadastro. Tente mais tarde. (SQL)");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/cadastro.html"); // ou cadastro.jsp
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/Cadastro.jsp"); // ou cadastro.jsp
             dispatcher.forward(request, response);
         } catch (IllegalArgumentException e) {
             // Erro de validação vindo do Service (ex: CPF/Email já existe)
             request.setAttribute("mensagemErro", e.getMessage()); // Exibe a mensagem específica da exceção
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/cadastro.html"); // ou cadastro.jsp
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/Cadastro.jsp"); // ou cadastro.jsp
             dispatcher.forward(request, response);
         } catch (Exception e) {
             // Outros erros inesperados

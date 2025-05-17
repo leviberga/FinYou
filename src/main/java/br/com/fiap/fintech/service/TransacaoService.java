@@ -166,9 +166,5 @@ public class TransacaoService {
         return conta;
     }
 
-    // Opcional: Fechar conexões se necessário
-    // public void fecharConexoes() {
-    //     try { if (transacaoDAO != null) transacaoDAO.fecharConexao(); } catch(Exception e) { e.printStackTrace(); }
-    //     try { if (contaDAO != null) contaDAO.fecharConexao(); } catch(Exception e) { e.printStackTrace(); }
-    // }
+
 }

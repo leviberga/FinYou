@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro de Novo Usuário</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resouces/css/estilo_cadastro.css">
 </head>
 <body>
 <h1>Cadastro de Novo Usuário</h1>
@@ -50,6 +50,6 @@
         <button type="submit">Cadastrar</button>
     </div>
 </form>
-<p><a href="${pageContext.request.contextPath}/login.jsp">Já tem uma conta? Faça login</a></p>
+<p><a href="${pageContext.request.contextPath}/jsp/Login.jsp">Já tem uma conta? Faça login</a></p>
 </body>
 </html>

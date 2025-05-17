@@ -275,13 +275,125 @@ public class TransacaoDAO  {
         }
     }
 
-    public void fecharConexao() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
+    // Dentro da classe TransacaoDAO.java
+
+// ... (outros métodos) ...
+
+    /**
+     * Lista todas as transações associadas a todas as contas de um usuário específico.
+     * Ordenado pela data da transação, mais recente primeiro.
+     *
+     * @param codigoUsuario O código do usuário.
+     * @return Uma lista de transações do usuário.
+     * @throws SQLException Se ocorrer um erro no banco de dados.
+     */
+    public List<Transacao> listarPorUsuario(int codigoUsuario) throws SQLException {
+        List<Transacao> transacoes = new ArrayList<>();
+        // Esta query busca transações onde a conta de origem ou destino pertence ao usuário.
+        // Se a lógica for que a transação só pertence ao dono da conta de origem (para despesas/transferencias enviadas)
+        // ou ao dono da conta de destino (para receitas/transferencias recebidas), a query precisa ser ajustada.
+        // Para simplificar, vamos assumir que queremos todas as transações das contas do usuário.
+        String sql = "SELECT t.* FROM T_TRANSACAO t " +
+                "INNER JOIN T_CONTA c ON t.COD_CONTA_ORIGEM = c.COD_CONTA " +
+                "WHERE c.COD_USUARIO = ? " +
+                "ORDER BY t.DAT_TRANSACAO DESC, t.COD_TRANSACAO DESC"; // Ordenar por código se data for igual
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, codigoUsuario);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                transacoes.add(extrairTransacaoDoResultSet(rs));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+        return transacoes;
     }
+
+
+    /**
+     * Calcula o total de receitas para um usuário em um determinado período.
+     * Se inicio e fim forem null, calcula sobre todas as receitas.
+     *
+     * @param codigoUsuario O código do usuário.
+     * @param inicio Data de início do período (pode ser null).
+     * @param fim Data de fim do período (pode ser null).
+     * @return O total de receitas.
+     * @throws SQLException Se ocorrer um erro no banco de dados.
+     */
+    public java.math.BigDecimal calcularTotalReceitasPorUsuario(int codigoUsuario, LocalDate inicio, LocalDate fim) throws SQLException {
+        // Esta query assume que 'RECEITA' tem COD_CONTA_ORIGEM como a conta que recebe.
+        StringBuilder sqlBuilder = new StringBuilder(
+                "SELECT SUM(t.VLR_TRANSACAO) FROM T_TRANSACAO t " +
+                        "INNER JOIN T_CONTA c ON t.COD_CONTA_ORIGEM = c.COD_CONTA " +
+                        "WHERE c.COD_USUARIO = ? AND t.TIP_TRANSACAO = 'RECEITA'"
+        );
+
+        if (inicio != null && fim != null) {
+            sqlBuilder.append(" AND t.DAT_TRANSACAO BETWEEN ? AND ?");
+        }
+
+        java.math.BigDecimal totalReceitas = java.math.BigDecimal.ZERO;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+            stmt.setInt(paramIndex++, codigoUsuario);
+            if (inicio != null && fim != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(inicio));
+                stmt.setDate(paramIndex++, Date.valueOf(fim));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                java.math.BigDecimal sum = rs.getBigDecimal(1);
+                if (sum != null) {
+                    totalReceitas = sum;
+                }
+            }
+        }
+        return totalReceitas;
+    }
+
+    /**
+     * Calcula o total de despesas para um usuário em um determinado período.
+     * Se inicio e fim forem null, calcula sobre todas as despesas.
+     *
+     * @param codigoUsuario O código do usuário.
+     * @param inicio Data de início do período (pode ser null).
+     * @param fim Data de fim do período (pode ser null).
+     * @return O total de despesas.
+     * @throws SQLException Se ocorrer um erro no banco de dados.
+     */
+    public java.math.BigDecimal calcularTotalDespesasPorUsuario(int codigoUsuario, LocalDate inicio, LocalDate fim) throws SQLException {
+        // Esta query assume que 'DESPESA' tem COD_CONTA_ORIGEM como a conta que gasta.
+        // E para 'TRANSFERENCIA', a conta de origem também é uma "saída" para o dono daquela conta.
+        StringBuilder sqlBuilder = new StringBuilder(
+                "SELECT SUM(t.VLR_TRANSACAO) FROM T_TRANSACAO t " +
+                        "INNER JOIN T_CONTA c ON t.COD_CONTA_ORIGEM = c.COD_CONTA " +
+                        "WHERE c.COD_USUARIO = ? AND t.TIP_TRANSACAO IN ('DESPESA', 'TRANSFERENCIA')" // Considera TRANSFERENCIA como saída da conta de origem
+        );
+
+        if (inicio != null && fim != null) {
+            sqlBuilder.append(" AND t.DAT_TRANSACAO BETWEEN ? AND ?");
+        }
+
+        java.math.BigDecimal totalDespesas = java.math.BigDecimal.ZERO;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sqlBuilder.toString())) {
+            int paramIndex = 1;
+            stmt.setInt(paramIndex++, codigoUsuario);
+            if (inicio != null && fim != null) {
+                stmt.setDate(paramIndex++, Date.valueOf(inicio));
+                stmt.setDate(paramIndex++, Date.valueOf(fim));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                java.math.BigDecimal sum = rs.getBigDecimal(1);
+                if (sum != null) {
+                    totalDespesas = sum;
+                }
+            }
+        }
+        return totalDespesas;
+    }
+
 }

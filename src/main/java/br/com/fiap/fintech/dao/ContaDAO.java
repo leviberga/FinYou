@@ -22,7 +22,7 @@ public class ContaDAO {
     public void inserir(Conta conta) throws SQLException {
         String sql = "INSERT INTO T_CONTA (NOM_CONTA, TIP_CONTA, SLD_CONTA, COD_USUARIO) VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql, new String[] {"COD_CONTA"})) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"COD_CONTA"})) {
             stmt.setString(1, conta.getNome());
             stmt.setString(2, conta.getTipo());
             stmt.setBigDecimal(3, conta.getSaldo());
@@ -60,6 +60,23 @@ public class ContaDAO {
 
             stmt.executeUpdate();
         }
+    }
+
+    public java.math.BigDecimal calcularSaldoTotalPorUsuario(int codigoUsuario) throws SQLException {
+        String sql = "SELECT SUM(SLD_CONTA) FROM T_CONTA WHERE COD_USUARIO = ?";
+        java.math.BigDecimal saldoTotal = java.math.BigDecimal.ZERO;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, codigoUsuario);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                java.math.BigDecimal sum = rs.getBigDecimal(1);
+                if (sum != null) {
+                    saldoTotal = sum;
+                }
+            }
+        }
+        return saldoTotal;
     }
 
     public void excluir(int codigo) throws SQLException {
@@ -147,14 +164,5 @@ public class ContaDAO {
 
         return conta;
     }
-
-    public void fecharConexao() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }
+
