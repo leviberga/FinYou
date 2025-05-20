@@ -32,7 +32,7 @@
             <span class="ms-3 fs-4 text-white"><c:out value="${nomeUsuario}" default="NOME_NAO_ENCONTRADO"/></span>
         </a>
         <%-- Link de Logout - Idealmente deveria ser um POST para um LogoutServlet --%>
-        <a class="navbar-brand logout" href="${pageContext.request.contextPath}/servlet/LogoutServlet"> <%-- Ajuste para seu servlet de logout --%>
+        <a class="navbar-brand logout" href="${pageContext.request.contextPath}/logout"> <%-- Ajuste para seu servlet de logout --%>
             <span class="text-white fs-4">Logout</span>
         </a>
     </div>

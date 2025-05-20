@@ -1,11 +1,11 @@
 package br.com.fiap.fintech.servlet;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ public class LogoutServlet extends HttpServlet {
         }
 
         // Redireciona para a página de login com uma mensagem de sucesso de logout
-        response.sendRedirect(request.getContextPath() + "/login.jsp?logout=sucesso");
+        response.sendRedirect(request.getContextPath() + "/jsp/Login.jsp?logout=sucesso");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

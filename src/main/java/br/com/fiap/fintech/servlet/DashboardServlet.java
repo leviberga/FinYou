@@ -1,13 +1,13 @@
 package br.com.fiap.fintech.servlet; // Certifique-se que este é seu pacote correto
 
 // Escolha o namespace correto (javax ou jakarta) e remova o outro
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 // OU
 // import jakarta.servlet.RequestDispatcher;
 // import jakarta.servlet.ServletException;
