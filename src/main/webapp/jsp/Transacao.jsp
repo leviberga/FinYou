@@ -16,7 +16,7 @@
     </c:choose>
 </h2>
 
-<form action="transacao" method="post">
+<form action="${pageContext.request.contextPath}/transacao" method="post">
     <input type="hidden" name="acao" value="<c:choose><c:when test='${not empty transacao}'>atualizar</c:when><c:otherwise>inserir</c:otherwise></c:choose>"/>
 
     <c:if test="${not empty transacao}">
@@ -31,8 +31,8 @@
 
     <label for="tipo">Tipo:</label>
     <select id="tipo" name="tipo" required>
-        <option value="ENTRADA" ${transacao.tipo == 'ENTRADA' ? 'selected' : ''}>Entrada</option>
-        <option value="SAIDA" ${transacao.tipo == 'SAIDA' ? 'selected' : ''}>Saída</option>
+        <option value="RECEITA" ${transacao.tipo == 'RECEITA' ? 'selected' : ''}>Receita</option>
+        <option value="DESPESA" ${transacao.tipo == 'DESPESA' ? 'selected' : ''}>Despesa</option>
         <option value="TRANSFERENCIA" ${transacao.tipo == 'TRANSFERENCIA' ? 'selected' : ''}>Transferência</option>
     </select><br><br>
 

@@ -19,10 +19,21 @@ public class TransacaoDAO  {
     }
 
     public void inserir(Transacao transacao) throws SQLException {
-        String sql = "INSERT INTO T_TRANSACAO (DAT_TRANSACAO, VLR_TRANSACAO, TIP_TRANSACAO, DSC_TRANSACAO, COD_CONTA_ORIGEM, COD_CONTA_DESTINO) VALUES (?, ?, ?, ?, ?, ?)";
+        System.out.println(">> DAO: Inserindo transação no banco");
+        System.out.println("Data: " + transacao.getData());
+        System.out.println("Valor: " + transacao.getValor());
+        System.out.println("Tipo: " + transacao.getTipo());
+        System.out.println("Descrição: " + transacao.getDescricao());
+        System.out.println("Conta Origem: " + transacao.getCodigoContaOrigem());
+        System.out.println("Conta Destino: " + transacao.getCodigoContaDestino());
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql, new String[] {"COD_TRANSACAO"})) {
-            stmt.setDate(1, Date.valueOf(transacao.getData()));
+        String sql = "INSERT INTO T_TRANSACAO (DAT_TRANSACAO, VLR_TRANSACAO, TIP_TRANSACAO, DSC_TRANSACAO, COD_CONTA_ORIGEM, COD_CONTA_DESTINO) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, java.sql.Date.valueOf(transacao.getData()));
             stmt.setBigDecimal(2, transacao.getValor());
             stmt.setString(3, transacao.getTipo());
             stmt.setString(4, transacao.getDescricao());
@@ -35,14 +46,12 @@ public class TransacaoDAO  {
             }
 
             stmt.executeUpdate();
+            System.out.println("✅ Transação inserida com sucesso");
 
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                transacao.setCodigo(rs.getInt(1));
-            }
-
-            // Atualiza o saldo das contas
-            atualizarSaldosContas(transacao);
+        } catch (SQLException e) {
+            System.out.println("❌ Erro ao inserir transação:");
+            e.printStackTrace();  // ESSENCIAL: mostra o erro real
+            throw e;  // para que o servlet capture e trate
         }
     }
 

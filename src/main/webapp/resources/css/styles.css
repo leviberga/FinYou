@@ -25,12 +25,12 @@ nav img, #carouselExample{
 .navbar {
     background-color: #111;
 }
-/*
+
 .nav-item:hover {
     transition: all 0.5s ease-in-out;
     font-weight: 900;
     text-shadow: 0 0 8px var(--light-color);
-} */
+}
 .carousel-inner img {
     height: 400px;
     object-fit: cover;

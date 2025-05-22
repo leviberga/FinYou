@@ -44,7 +44,9 @@ public class TransacaoServlet extends HttpServlet {
 
         } catch (SQLException | NumberFormatException e) {
             req.setAttribute("erro", "Erro ao buscar transações: " + e.getMessage());
+            e.printStackTrace();
             req.getRequestDispatcher("/jsp/erro.jsp").forward(req, resp);
+            System.out.println();
         }
     }
 
@@ -52,8 +54,11 @@ public class TransacaoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
 
+        System.out.println("Recebido POST em /transacao");
+
         try {
             String acao = req.getParameter("acao");
+            System.out.println("Ação recebida: " + acao);
 
             if ("inserir".equalsIgnoreCase(acao)) {
                 Transacao transacao = montarTransacao(req);
@@ -91,6 +96,14 @@ public class TransacaoServlet extends HttpServlet {
         String descricao = req.getParameter("descricao");
         String contaOrigemStr = req.getParameter("contaOrigem");
         String contaDestinoStr = req.getParameter("contaDestino");
+
+        System.out.println("Dados recebidos:");
+        System.out.println("Data: " + dataStr);
+        System.out.println("Valor: " + valorStr);
+        System.out.println("Tipo: " + tipo);
+        System.out.println("Descrição: " + descricao);
+        System.out.println("Conta Origem: " + contaOrigemStr);
+        System.out.println("Conta Destino: " + contaDestinoStr);
 
         if (dataStr == null || valorStr == null || tipo == null || contaOrigemStr == null)
             throw new Exception("Campos obrigatórios não foram preenchidos");

@@ -8,6 +8,13 @@
     <link rel="shortcut icon" type="imagex/png" href="${pageContext.request.contextPath}/resources/images/LogoFinYou.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles.css">
+<style>
+.nav-item:hover {
+    transition: all 0.5s ease-in-out;
+    font-weight: 900;
+    text-shadow: 0 0 8px var(--light-color);
+}
+</style>
 </head>
 <body>
     <!-- Navbar -->
