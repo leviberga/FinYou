@@ -24,20 +24,22 @@
 <body class="bg-light">
 <nav class="navbar bg-black">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-        <a class="navbar-brand d-flex align-items-center p-2" href="#">
-            <img src="${pageContext.request.contextPath}/resources/images/perfil.png" alt="Foto de perfil"
-                 class="rounded-circle"
-                 style="width: 50px; height: 50px; object-fit: cover;">
-            <%-- Exibe o nome do usuário logado --%>
-            <span class="ms-3 fs-4 text-white"><c:out value="${nomeUsuario}" default="NOME_NAO_ENCONTRADO"/></span>
-        </a>
-        <%-- Link de Logout - Idealmente deveria ser um POST para um LogoutServlet --%>
-        <a class="navbar-brand logout" href="${pageContext.request.contextPath}/logout"> <%-- Ajuste para seu servlet de logout --%>
+        <div class="d-flex align-items-center">
+            <a class="navbar-brand d-flex align-items-center p-2" href="#">
+                <span class="ms-3 fs-4 text-white">
+                    <c:out value="${nomeUsuario}" default="Nome não encontrado"/>
+                </span>
+            </a>
+            <%-- Link para Transações --%>
+            <a class="nav-link logout text-white ms-4 fs-5" href="${pageContext.request.contextPath}/transacao">Transações</a>
+        </div>
+
+        <%-- Link de Logout --%>
+        <a class="navbar-brand logout" href="${pageContext.request.contextPath}/logout">
             <span class="text-white fs-4">Logout</span>
         </a>
     </div>
 </nav>
-
 <div class="container mt-4">
     <c:if test="${not empty mensagemErro}">
         <div class="alert alert-danger" role="alert">

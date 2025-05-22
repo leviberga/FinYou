@@ -17,11 +17,13 @@ p::selection, h5::selection, span::selection{
     border: 2px solid white;
     user-select: none;
 }
+
 .logout:hover{
     transition: all 0.5s ease-in-out;
     font-weight: 900;
     text-shadow: 0 0 8px var(--light-color);
 }
+
 @media (max-width: 600px) {
     .navbar .container-fluid {
         flex-direction: row; 

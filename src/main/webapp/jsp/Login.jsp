@@ -9,6 +9,23 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles.css"> <%-- mesmo CSS da home --%>
     <style>
+        .back-arrow {
+        position: fixed; /* fixa no topo da página */
+        top: 20px;
+        left: 20px;
+        color: #000; /* seta preta */
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        z-index: 1000; /* para garantir que fique acima dos elementos */
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        }
+        .back-arrow:hover {
+        color: #333; /* cor mais escura ao passar o mouse */
+        }
         body {
             background-color: #ffffff;
             min-height: 100vh;
@@ -70,6 +87,7 @@
     </style>
 </head>
 <body>
+    <a href="${pageContext.request.contextPath}/jsp/index.jsp" class="back-arrow" title="Voltar para o menu">&#8592; Voltar</a>
     <div class="login-card">
         <h2>Entrar na FinYou</h2>
 
@@ -101,6 +119,7 @@
         </form>
 
         <a class="small-link" href="${pageContext.request.contextPath}/jsp/Cadastro.jsp">Não tem uma conta? Cadastre-se aqui</a>
+
     </div>
 
     <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js" async></script>
