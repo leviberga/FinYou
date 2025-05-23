@@ -5,6 +5,7 @@ import br.com.fiap.fintech.factory.ConnectionFactory;
 import br.com.fiap.fintech.model.Transacao;
 import br.com.fiap.fintech.model.Conta;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -211,6 +212,7 @@ public class TransacaoDAO  {
     }
 
     private void atualizarSaldosContas(Transacao transacao) throws SQLException {
+        this.connection = ConnectionFactory.getConnection();
         ContaDAO contaDAO = new ContaDAO();
 
         // Obtém as contas envolvidas

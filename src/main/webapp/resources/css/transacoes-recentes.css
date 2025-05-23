@@ -1,0 +1,230 @@
+/* Estilos para Transações Recentes */
+.transacoes-card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border-radius: 0.5rem;
+}
+
+.transacoes-navigation {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.transacoes-list {
+    min-height: 300px;
+}
+
+.transacao-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.transacao-item:last-child {
+    border-bottom: none;
+}
+
+.transacao-item:hover {
+    background-color: #f8f9fa;
+}
+
+.transacao-item.hidden {
+    display: none;
+}
+
+.transacao-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.transacao-descricao {
+    font-size: 1rem;
+    color: #212529;
+}
+
+.transacao-data {
+    font-size: 0.875rem;
+}
+
+.transacao-categoria .badge {
+    font-size: 0.75rem;
+}
+
+.transacao-valor {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.valor-positivo {
+    color: #198754;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.valor-negativo {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.valor-neutro {
+    color: #6c757d;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.transacao-tipo {
+    font-size: 0.75rem;
+    text-transform: capitalize;
+}
+
+.transacao-vazia {
+    color: #6c757d;
+}
+
+.transacao-vazia i {
+    opacity: 0.5;
+}
+
+.transacoes-pagination .pagination {
+    margin-bottom: 0;
+}
+
+.transacoes-pagination .page-link {
+    color: #6c757d;
+    border-color: #dee2e6;
+}
+
+.transacoes-pagination .page-item.active .page-link {
+    background-color: #212529;
+    border-color: #212529;
+}
+
+.transacoes-pagination .page-link:hover {
+    color: #212529;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* Responsividade */
+@media (max-width: 576px) {
+    .transacoes-navigation {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .transacao-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .transacao-valor {
+        align-self: stretch;
+        text-align: left;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .transacao-info {
+        width: 100%;
+    }
+
+    .transacao-descricao {
+        font-size: 0.95rem;
+    }
+
+    .valor-positivo,
+    .valor-negativo,
+    .valor-neutro {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .transacoes-navigation span {
+        font-size: 0.875rem;
+    }
+
+    .transacoes-navigation .btn {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* Animações */
+.transacao-item {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estados de loading */
+.transacoes-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: #6c757d;
+}
+
+.transacoes-loading .spinner-border {
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Melhorias para acessibilidade */
+.transacao-item:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+.btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Dark mode support (opcional) */
+@media (prefers-color-scheme: dark) {
+    .transacoes-card {
+        background-color: #212529;
+        color: #fff;
+    }
+
+    .transacao-item {
+        border-bottom-color: #495057;
+    }
+
+    .transacao-item:hover {
+        background-color: #343a40;
+    }
+
+    .transacao-data,
+    .transacao-tipo,
+    .transacao-vazia {
+        color: #adb5bd;
+    }
+}

@@ -21,6 +21,7 @@ import br.com.fiap.fintech.model.Usuario;
 import br.com.fiap.fintech.service.DashboardService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Map;
 // Importe um logger se for usar (ex: SLF4J)
 // import org.slf4j.Logger;
@@ -96,6 +97,8 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("mensagemErroGeral", "Ocorreu um erro inesperado ao carregar seus dados. Tente novamente mais tarde.");
             RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/erro.jsp");
             dispatcher.forward(request, response);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -110,4 +113,7 @@ public class DashboardServlet extends HttpServlet {
         super.destroy();
         // Qualquer limpeza de recursos do service, se necessário (improvável neste caso)
     }
+
+
+
 }

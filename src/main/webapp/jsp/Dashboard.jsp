@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> <%-- Para formatação de números e datas --%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -8,10 +8,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinYou - Minha dashboard</title>
-    <%-- Ajuste os caminhos para seus assets CSS e JS usando pageContext.request.contextPath --%>
     <link rel="shortcut icon" type="imagex/png" href="${pageContext.request.contextPath}/images/LogoFinYou.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/home.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/transacoes-recentes.css">
     <style>
         .money-value.hidden-value::before {
             content: "****";
@@ -30,16 +30,14 @@
                     <c:out value="${nomeUsuario}" default="Nome não encontrado"/>
                 </span>
             </a>
-            <%-- Link para Transações --%>
             <a class="nav-link logout text-white ms-4 fs-5" href="${pageContext.request.contextPath}/transacao">Transações</a>
         </div>
-
-        <%-- Link de Logout --%>
         <a class="navbar-brand logout" href="${pageContext.request.contextPath}/logout">
             <span class="text-white fs-4">Logout</span>
         </a>
     </div>
 </nav>
+
 <div class="container mt-4">
     <c:if test="${not empty mensagemErro}">
         <div class="alert alert-danger" role="alert">
@@ -47,6 +45,7 @@
         </div>
     </c:if>
 
+    <!-- Saldo Atual -->
     <div class="card mt-3 text-center">
         <div class="card-body">
             <h5 class="card-title fs-3">Saldo Atual</h5>
@@ -56,6 +55,8 @@
             <button id="toggleButton" class="btn btn-outline-dark">Esconder Valores</button>
         </div>
     </div>
+
+    <!-- Ganhos e Gastos -->
     <div class="row g-3">
         <div class="col-md-6 mt-4">
             <div class="card text-center">
@@ -78,65 +79,125 @@
             </div>
         </div>
     </div>
+
+    <!-- Transações Recentes -->
     <div class="mt-4">
         <h5 class="text-center fs-4">Transações Recentes</h5>
     </div>
-    <div class="card mt-3">
+
+    <div class="card mt-3 transacoes-card">
         <div class="card-body">
-            <h5 class="card-title">Últimas Transações</h5>
-            <ul class="list-group list-group-flush">
-                <c:choose>
-                    <c:when test="${not empty transacoesRecentes}">
-                        <c:forEach var="transacao" items="${transacoesRecentes}">
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span><c:out value="${transacao.descricao}"/></span>
-                                <c:choose>
-                                    <c:when test="${transacao.tipo == 'RECEITA'}">
-                                        <span class="text-success">+ <fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/></span>
-                                    </c:when>
-                                    <c:when test="${transacao.tipo == 'DESPESA' || transacao.tipo == 'TRANSFERENCIA'}"> <%-- Assumindo que transferencia é uma saída para a conta de origem --%>
-                                        <span class="text-danger">- <fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/></span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span><fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/></span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </li>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="list-group-item">Nenhuma transação recente encontrada.</li>
-                    </c:otherwise>
-                </c:choose>
-            </ul>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">Últimas Transações</h5>
+                <div class="transacoes-navigation">
+                    <button id="btnAnterior" class="btn btn-outline-secondary btn-sm" disabled>
+                        <i class="fas fa-chevron-left"></i> Anterior
+                    </button>
+                    <span id="paginaInfo" class="mx-2 text-muted">1 de 1</span>
+                    <button id="btnProximo" class="btn btn-outline-secondary btn-sm" disabled>
+                        Próximo <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="transacoes-container">
+                <div class="transacoes-list">
+                    <c:choose>
+                        <c:when test="${not empty transacoesRecentes}">
+                            <c:forEach var="transacao" items="${transacoesRecentes}" varStatus="status">
+                                <div class="transacao-item ${status.index >= 5 ? 'hidden' : ''}" data-page="${status.index div 5 + 1}">
+                                    <div class="transacao-info">
+                                        <div class="transacao-descricao">
+                                            <strong><c:out value="${transacao.descricao}"/></strong>
+                                        </div>
+                                        <div class="transacao-data text-muted">
+                                            <fmt:formatDate value="${transacao.dataComoDate}" pattern="dd/MM/yyyy"/>
+
+                                        </div>
+                                    </div>
+                                    <div class="transacao-valor">
+                                        <c:choose>
+                                            <c:when test="${transacao.tipo == 'RECEITA'}">
+                                                <span class="valor-positivo money-value" data-value="+ <fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/>">
+                                                    <span>+ <fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/></span>
+                                                </span>
+                                            </c:when>
+                                            <c:when test="${transacao.tipo == 'DESPESA' || transacao.tipo == 'TRANSFERENCIA'}">
+                                                <span class="valor-negativo money-value" data-value="- <fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/>">
+                                                    <span>- <fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/></span>
+                                                </span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="valor-neutro money-value" data-value="<fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/>">
+                                                    <span><fmt:formatNumber value="${transacao.valor}" type="currency" currencySymbol="R$ "/></span>
+                                                </span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <div class="transacao-tipo text-muted">
+                                            <small><c:out value="${transacao.tipo}"/></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="transacao-vazia text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">Nenhuma transação recente encontrada.</p>
+                                <a href="${pageContext.request.contextPath}/transacao" class="btn btn-primary">
+                                    Adicionar Transação
+                                </a>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+
+            <c:if test="${not empty transacoesRecentes && transacoesRecentes.size() > 5}">
+                <div class="transacoes-pagination mt-3">
+                    <div class="d-flex justify-content-center">
+                        <nav aria-label="Paginação das transações">
+                            <ul class="pagination pagination-sm" id="paginacao">
+                                <!-- Páginas serão geradas via JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </c:if>
         </div>
     </div>
 </div>
+
 <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js" async></script>
+<script src="${pageContext.request.contextPath}/resources/js/transacoes-recentes.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Toggle para esconder/mostrar valores
         const toggleButton = document.getElementById("toggleButton");
         if (toggleButton) {
             toggleButton.addEventListener("click", function () {
                 const values = document.querySelectorAll(".money-value");
                 const button = this;
-                // Verifica se o primeiro span visível tem conteúdo ou se o data-value foi aplicado
                 const firstValueSpan = values[0] ? values[0].querySelector('span') : null;
                 const areValuesCurrentlyVisible = firstValueSpan ? (firstValueSpan.textContent.trim() !== '****' && firstValueSpan.style.display !== 'none') : (values[0] && values[0].textContent.trim() !== '****');
-
 
                 values.forEach(valueElement => {
                     const span = valueElement.querySelector('span');
                     if (areValuesCurrentlyVisible) {
                         if(span) span.style.display = 'none';
-                        valueElement.classList.add('hidden-value'); // Adiciona classe para mostrar '****' via CSS
+                        valueElement.classList.add('hidden-value');
                     } else {
-                        if(span) span.style.display = ''; // ou 'inline' ou o display original
+                        if(span) span.style.display = '';
                         valueElement.classList.remove('hidden-value');
                     }
                 });
                 button.textContent = areValuesCurrentlyVisible ? "Mostrar Valores" : "Esconder Valores";
             });
+        }
+
+        // Inicializar paginação das transações
+        if (typeof initTransacoesPagination === 'function') {
+            initTransacoesPagination();
         }
     });
 </script>

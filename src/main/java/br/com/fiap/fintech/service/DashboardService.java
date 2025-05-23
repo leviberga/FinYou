@@ -43,7 +43,11 @@ public class DashboardService {
         }
     }
 
-    public Map<String, Object> carregarDadosDashboard(Usuario usuarioLogado) {
+    public Map<String, Object> carregarDadosDashboard(Usuario usuarioLogado) throws SQLException {
+
+
+
+
         if (usuarioLogado == null || usuarioLogado.getCodigo() == null) {
             // logger.warn("Tentativa de carregar dados do dashboard com usuário logado nulo ou sem código.");
             throw new IllegalArgumentException("Usuário logado inválido ou não possui código de identificação.");

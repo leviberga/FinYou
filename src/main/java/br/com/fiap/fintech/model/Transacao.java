@@ -3,6 +3,9 @@ package br.com.fiap.fintech.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import java.time.ZoneId;
+import java.util.Date;
+
 public class Transacao {
     private Integer codigo;
     private LocalDate data;
@@ -41,6 +44,12 @@ public class Transacao {
 
     public void setData(LocalDate data) {
         this.data = data;
+    }
+
+    // ✅ MÉTODO AUXILIAR PARA USO NO JSP
+    public Date getDataComoDate() {
+        if (data == null) return null;
+        return Date.from(data.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     public BigDecimal getValor() {
