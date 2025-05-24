@@ -9,6 +9,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    min-height: 32px; /* Garantir altura mínima */
 }
 
 .transacoes-list {
@@ -33,7 +34,7 @@
 }
 
 .transacao-item.hidden {
-    display: none;
+    display: none !important;
 }
 
 .transacao-info {
@@ -95,18 +96,27 @@
     opacity: 0.5;
 }
 
+/* Estilos de paginação aprimorados */
+.transacoes-pagination {
+    margin-top: 1rem;
+}
+
 .transacoes-pagination .pagination {
     margin-bottom: 0;
+    justify-content: center;
 }
 
 .transacoes-pagination .page-link {
     color: #6c757d;
     border-color: #dee2e6;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
 }
 
 .transacoes-pagination .page-item.active .page-link {
     background-color: #212529;
     border-color: #212529;
+    color: white;
 }
 
 .transacoes-pagination .page-link:hover {
@@ -115,11 +125,50 @@
     border-color: #dee2e6;
 }
 
+.transacoes-pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+}
+
+/* Garantir visibilidade dos botões de navegação */
+.transacoes-navigation .btn {
+    min-width: 80px;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.transacoes-navigation .btn:disabled,
+.transacoes-navigation .btn.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+#paginaInfo {
+    font-size: 0.875rem;
+    color: #6c757d;
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: center;
+}
+
 /* Responsividade */
 @media (max-width: 576px) {
     .transacoes-navigation {
         flex-direction: column;
         gap: 0.5rem;
+        align-items: stretch;
+    }
+
+    .transacoes-navigation .btn {
+        width: 100%;
+        min-width: auto;
+    }
+
+    #paginaInfo {
+        order: -1;
+        margin-bottom: 0.5rem;
     }
 
     .transacao-item {
@@ -149,6 +198,11 @@
     .valor-negativo,
     .valor-neutro {
         font-size: 1rem;
+    }
+
+    .transacoes-pagination .page-link {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
     }
 }
 
@@ -205,6 +259,11 @@
 
 .btn:focus {
     box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Forçar visibilidade da navegação quando necessário */
+.transacoes-navigation[style*="display: flex"] {
+    display: flex !important;
 }
 
 /* Dark mode support (opcional) */

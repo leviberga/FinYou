@@ -2,6 +2,9 @@ package br.com.fiap.fintech.servlet;
 
 import br.com.fiap.fintech.dao.TransacaoDAO;
 import br.com.fiap.fintech.model.Transacao;
+import br.com.fiap.fintech.dao.ContaDAO;
+import br.com.fiap.fintech.model.Conta;
+import br.com.fiap.fintech.model.Usuario;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,25 +31,37 @@ public class TransacaoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+
+        if (usuarioLogado == null) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+
         try {
+            ContaDAO contaDAO = new ContaDAO();
+            List<Conta> contas = contaDAO.listarPorUsuario(usuarioLogado.getCodigo());
+            Conta conta = contas.isEmpty() ? null : contas.get(0);
+            req.setAttribute("contaLogada", conta);
+
             String codigoStr = req.getParameter("codigo");
 
             if (codigoStr != null && !codigoStr.isEmpty()) {
                 int codigo = Integer.parseInt(codigoStr);
                 Transacao transacao = dao.buscarPorCodigo(codigo);
                 req.setAttribute("transacao", transacao);
-                req.getRequestDispatcher("/jsp/Transacao.jsp").forward(req, resp);
             } else {
                 List<Transacao> transacoes = dao.listarTodos();
                 req.setAttribute("transacoes", transacoes);
-                req.getRequestDispatcher("/jsp/Transacao.jsp").forward(req, resp);
             }
 
-        } catch (SQLException | NumberFormatException e) {
-            req.setAttribute("erro", "Erro ao buscar transações: " + e.getMessage());
+            req.getRequestDispatcher("/jsp/Transacao.jsp").forward(req, resp);
+
+        } catch (Exception e) {
+            req.setAttribute("erro", "Erro ao buscar dados: " + e.getMessage());
             e.printStackTrace();
             req.getRequestDispatcher("/jsp/erro.jsp").forward(req, resp);
-            System.out.println();
         }
     }
 
@@ -54,11 +69,8 @@ public class TransacaoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
 
-        System.out.println("Recebido POST em /transacao");
-
         try {
             String acao = req.getParameter("acao");
-            System.out.println("Ação recebida: " + acao);
 
             if ("inserir".equalsIgnoreCase(acao)) {
                 Transacao transacao = montarTransacao(req);
@@ -96,14 +108,6 @@ public class TransacaoServlet extends HttpServlet {
         String descricao = req.getParameter("descricao");
         String contaOrigemStr = req.getParameter("contaOrigem");
         String contaDestinoStr = req.getParameter("contaDestino");
-
-        System.out.println("Dados recebidos:");
-        System.out.println("Data: " + dataStr);
-        System.out.println("Valor: " + valorStr);
-        System.out.println("Tipo: " + tipo);
-        System.out.println("Descrição: " + descricao);
-        System.out.println("Conta Origem: " + contaOrigemStr);
-        System.out.println("Conta Destino: " + contaDestinoStr);
 
         if (dataStr == null || valorStr == null || tipo == null || contaOrigemStr == null)
             throw new Exception("Campos obrigatórios não foram preenchidos");

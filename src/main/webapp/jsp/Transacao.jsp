@@ -40,7 +40,7 @@
             background-color: #000;
             border: none;
             width: 100%;
-            color: #fff
+            color: #fff;
         }
         .btn-primary-custom:hover {
             background-color: #333;
@@ -93,7 +93,7 @@
 
         <div class="mb-3">
             <label for="tipo" class="form-label">Tipo</label>
-            <select class="form-select" id="tipo" name="tipo" required>
+            <select class="form-select" id="tipo" name="tipo" required onchange="toggleContaDestino()">
                 <option value="RECEITA" ${transacao.tipo == 'RECEITA' ? 'selected' : ''}>Receita</option>
                 <option value="DESPESA" ${transacao.tipo == 'DESPESA' ? 'selected' : ''}>Despesa</option>
                 <option value="TRANSFERENCIA" ${transacao.tipo == 'TRANSFERENCIA' ? 'selected' : ''}>Transferência</option>
@@ -107,12 +107,14 @@
 
         <div class="mb-3">
             <label for="contaOrigem" class="form-label">Conta de Origem</label>
-            <input type="number" class="form-control" id="contaOrigem" name="contaOrigem" value="${transacao.codigoContaOrigem}" required>
+            <input type="number" class="form-control" id="contaOrigem" name="contaOrigem"
+                   value="${not empty transacao ? transacao.codigoContaOrigem : contaLogada.codigo}" readonly required>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" id="contaDestinoContainer" style="display: none;">
             <label for="contaDestino" class="form-label">Conta de Destino</label>
-            <input type="number" class="form-control" id="contaDestino" name="contaDestino" value="${transacao.codigoContaDestino}">
+            <input type="number" class="form-control" id="contaDestino" name="contaDestino"
+                   value="${not empty transacao ? transacao.codigoContaDestino : contaLogada.codigo}">
         </div>
 
         <button type="submit" class="btn btn-primary-custom">
@@ -123,6 +125,17 @@
         </button>
     </form>
 </div>
+
+<script>
+    function toggleContaDestino() {
+        const tipo = document.getElementById("tipo").value;
+        const contaDestinoContainer = document.getElementById("contaDestinoContainer");
+        contaDestinoContainer.style.display = (tipo === "TRANSFERENCIA") ? "block" : "none";
+    }
+
+    // Executa ao carregar a página
+    window.onload = toggleContaDestino;
+</script>
 
 <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js" async></script>
 </body>

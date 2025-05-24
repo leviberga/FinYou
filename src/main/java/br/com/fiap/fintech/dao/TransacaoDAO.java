@@ -235,7 +235,7 @@ public class TransacaoDAO  {
             contaDAO.atualizarSaldo(contaOrigem.getCodigo(), contaOrigem.getSaldo());
         } else if ("TRANSFERENCIA".equals(transacao.getTipo()) && transacao.getCodigoContaDestino() != null) {
             // Transferência: subtrai da origem e adiciona ao destino
-              Conta contaDestino = contaDAO.buscarPorCodigo(transacao.getCodigoContaDestino());
+            Conta contaDestino = contaDAO.buscarPorCodigo(transacao.getCodigoContaDestino());
 
             if (contaDestino == null) {
                 throw new SQLException("Conta de destino não encontrada");
@@ -272,7 +272,7 @@ public class TransacaoDAO  {
             contaDAO.atualizarSaldo(contaOrigem.getCodigo(), contaOrigem.getSaldo());
         } else if ("TRANSFERENCIA".equals(transacao.getTipo()) && transacao.getCodigoContaDestino() != null) {
             // Transferência: adiciona à origem e subtrai do destino
-           Conta contaDestino = contaDAO.buscarPorCodigo(transacao.getCodigoContaDestino());
+            Conta contaDestino = contaDAO.buscarPorCodigo(transacao.getCodigoContaDestino());
 
             if (contaDestino == null) {
                 throw new SQLException("Conta de destino não encontrada");

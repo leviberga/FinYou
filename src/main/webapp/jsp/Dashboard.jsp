@@ -19,6 +19,25 @@
         .money-value.hidden-value span {
             display: none;
         }
+
+        /* Estilos para melhor exibição de todas as transações */
+        .transacoes-list {
+            max-height: none; /* Remove limite de altura */
+        }
+
+        .transacao-item {
+            display: flex !important; /* Força exibição */
+            margin-bottom: 10px;
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+
+        .transacao-item:hover {
+            background-color: #e9ecef;
+            transition: background-color 0.2s;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -82,22 +101,19 @@
 
     <!-- Transações Recentes -->
     <div class="mt-4">
-        <h5 class="text-center fs-4">Transações Recentes</h5>
+        <h5 class="text-center fs-4">Todas as Transações</h5>
     </div>
 
     <div class="card mt-3 transacoes-card">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="card-title mb-0">Últimas Transações</h5>
-                <div class="transacoes-navigation">
-                    <button id="btnAnterior" class="btn btn-outline-secondary btn-sm" disabled>
-                        <i class="fas fa-chevron-left"></i> Anterior
-                    </button>
-                    <span id="paginaInfo" class="mx-2 text-muted">1 de 1</span>
-                    <button id="btnProximo" class="btn btn-outline-secondary btn-sm" disabled>
-                        Próximo <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
+                <h5 class="card-title mb-0">
+                    Transações
+                    <c:if test="${not empty transacoesRecentes}">
+                        <small class="text-muted">(${transacoesRecentes.size()} total)</small>
+                    </c:if>
+                </h5>
+                <!-- Removido elemento de navegação pois não precisamos mais -->
             </div>
 
             <div id="transacoes-container">
@@ -105,14 +121,13 @@
                     <c:choose>
                         <c:when test="${not empty transacoesRecentes}">
                             <c:forEach var="transacao" items="${transacoesRecentes}" varStatus="status">
-                                <div class="transacao-item ${status.index >= 5 ? 'hidden' : ''}" data-page="${status.index div 5 + 1}">
+                                <div class="transacao-item" data-index="${status.index}">
                                     <div class="transacao-info">
                                         <div class="transacao-descricao">
                                             <strong><c:out value="${transacao.descricao}"/></strong>
                                         </div>
                                         <div class="transacao-data text-muted">
                                             <fmt:formatDate value="${transacao.dataComoDate}" pattern="dd/MM/yyyy"/>
-
                                         </div>
                                     </div>
                                     <div class="transacao-valor">
@@ -143,7 +158,7 @@
                         <c:otherwise>
                             <div class="transacao-vazia text-center py-4">
                                 <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">Nenhuma transação recente encontrada.</p>
+                                <p class="text-muted">Nenhuma transação encontrada.</p>
                                 <a href="${pageContext.request.contextPath}/transacao" class="btn btn-primary">
                                     Adicionar Transação
                                 </a>
@@ -153,25 +168,18 @@
                 </div>
             </div>
 
-            <c:if test="${not empty transacoesRecentes && transacoesRecentes.size() > 5}">
-                <div class="transacoes-pagination mt-3">
-                    <div class="d-flex justify-content-center">
-                        <nav aria-label="Paginação das transações">
-                            <ul class="pagination pagination-sm" id="paginacao">
-                                <!-- Páginas serão geradas via JavaScript -->
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </c:if>
+            <!-- Removido elemento de paginação -->
         </div>
     </div>
 </div>
 
-<script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js" async></script>
-<script src="${pageContext.request.contextPath}/resources/js/transacoes-recentes.js"></script>
+<!-- Scripts com caminhos corrigidos -->
+<script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/transacoes-recentes.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        console.log('DOM carregado - inicializando dashboard');
+
         // Toggle para esconder/mostrar valores
         const toggleButton = document.getElementById("toggleButton");
         if (toggleButton) {
@@ -195,10 +203,22 @@
             });
         }
 
-        // Inicializar paginação das transações
-        if (typeof initTransacoesPagination === 'function') {
-            initTransacoesPagination();
-        }
+        // Inicializar exibição das transações (sem paginação)
+        setTimeout(() => {
+            console.log('Tentando inicializar transações...');
+            if (typeof initTransacoesPagination === 'function') {
+                initTransacoesPagination();
+                console.log('Transações inicializadas com sucesso');
+            } else {
+                console.error('Função initTransacoesPagination não encontrada');
+                // Fallback: mostrar todas as transações diretamente
+                const transacoes = document.querySelectorAll('.transacao-item');
+                transacoes.forEach(transacao => {
+                    transacao.style.display = 'flex';
+                });
+                console.log(`Fallback aplicado - ${transacoes.length} transações exibidas`);
+            }
+        }, 100);
     });
 </script>
 </body>
