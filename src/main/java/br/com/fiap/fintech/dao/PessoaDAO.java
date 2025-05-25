@@ -1,6 +1,6 @@
 package br.com.fiap.fintech.dao;
 
-import br.com.fiap.fintech.factory.ConnectionFactory;
+import br.com.fiap.fintech.factory.ConnectionManager;
 import br.com.fiap.fintech.model.Pessoa;
 
 import java.sql.*;
@@ -12,7 +12,7 @@ public class PessoaDAO {
     private Connection connection;
 
     public PessoaDAO() throws SQLException{
-        this.connection = ConnectionFactory.getConnection();
+        this.connection = ConnectionManager.getConnection();
     }
 
     public void inserir(Pessoa pessoa) throws SQLException {

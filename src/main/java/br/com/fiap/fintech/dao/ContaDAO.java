@@ -1,6 +1,6 @@
 package br.com.fiap.fintech.dao;
 
-import br.com.fiap.fintech.factory.ConnectionFactory;
+import br.com.fiap.fintech.factory.ConnectionManager;
 import br.com.fiap.fintech.model.Conta;
 
 import java.sql.Connection;
@@ -16,7 +16,7 @@ public class ContaDAO {
     private Connection connection;
 
     public ContaDAO() throws SQLException {
-        this.connection = ConnectionFactory.getConnection();
+        this.connection = ConnectionManager.getConnection();
     }
 
     public void inserir(Conta conta) throws SQLException {

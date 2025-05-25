@@ -8,13 +8,77 @@
     <link rel="shortcut icon" type="imagex/png" href="${pageContext.request.contextPath}/resources/images/LogoFinYou.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles.css">
-<style>
-.nav-item:hover {
-    transition: all 0.5s ease-in-out;
-    font-weight: 900;
-    text-shadow: 0 0 8px var(--light-color);
-}
-</style>
+    <style>
+        .nav-item:hover {
+            transition: all 0.5s ease-in-out;
+            font-weight: 900;
+            text-shadow: 0 0 8px var(--light-color);
+        }
+
+        /* Estilos específicos para o navbar responsivo */
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.3);
+            padding: 0.25rem 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Melhorar a aparência do menu mobile */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background-color: rgba(0, 0, 0, 0.9);
+                border-radius: 8px;
+                margin-top: 10px;
+                padding: 15px;
+            }
+
+            .navbar-nav {
+                text-align: center;
+            }
+
+            .nav-item {
+                margin: 5px 0;
+            }
+
+            .nav-link {
+                padding: 10px 15px !important;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+            }
+
+            .nav-link:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Garantir que o logo não quebre em telas pequenas */
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .navbar-brand span {
+            margin-left: 10px;
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand span {
+                font-size: 1.1rem;
+            }
+
+            .navbar-brand img {
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -26,11 +90,23 @@
                      style="width: 50px; height: 50px; object-fit: cover;">
                 <span class="text-white">FinYou</span>
             </a>
-         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link text-white" href="${pageContext.request.contextPath}/jsp/Login.jsp">Entrar</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="${pageContext.request.contextPath}/jsp/Cadastro.jsp">Cadastre-se</a></li>
-            </ul>
+
+            <!-- Botão hamburger para mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menu collapse -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="${pageContext.request.contextPath}/jsp/Login.jsp">Entrar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="${pageContext.request.contextPath}/jsp/Cadastro.jsp">Cadastre-se</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -122,6 +198,6 @@
         <p>&copy; 2024 FinYou. Todos os direitos reservados.</p>
     </footer>
 
-    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js" async></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

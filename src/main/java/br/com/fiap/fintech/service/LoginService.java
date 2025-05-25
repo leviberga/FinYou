@@ -1,6 +1,7 @@
 package br.com.fiap.fintech.service;
 
 import br.com.fiap.fintech.dao.UsuarioDAO;
+import br.com.fiap.fintech.factory.DaoFactory;
 import br.com.fiap.fintech.model.Usuario;
 
 import java.sql.SQLException;
@@ -10,7 +11,8 @@ public class LoginService {
     private UsuarioDAO usuarioDAO;
 
     public LoginService() throws SQLException {
-        this.usuarioDAO = new UsuarioDAO();
+        // Usando DaoFactory para obter a instância do DAO
+        this.usuarioDAO = DaoFactory.getUsuarioDAO();
     }
 
     /**
@@ -31,7 +33,7 @@ public class LoginService {
             System.out.println("Falha no login para: " + email + ". Verifique email/senha.");
         }
 
-        // usuarioDAO.fecharConexao(); // Opcional
+
         return usuario;
     }
 }

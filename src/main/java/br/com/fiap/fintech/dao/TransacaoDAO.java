@@ -1,7 +1,5 @@
 package br.com.fiap.fintech.dao;
-
-
-import br.com.fiap.fintech.factory.ConnectionFactory;
+import br.com.fiap.fintech.factory.ConnectionManager;
 import br.com.fiap.fintech.model.Transacao;
 import br.com.fiap.fintech.model.Conta;
 
@@ -16,7 +14,7 @@ public class TransacaoDAO  {
     private Connection connection;
 
     public TransacaoDAO() throws SQLException {
-        this.connection = ConnectionFactory.getConnection();
+        this.connection = ConnectionManager.getConnection();
     }
 
     public void inserir(Transacao transacao) throws SQLException {
@@ -31,7 +29,7 @@ public class TransacaoDAO  {
         String sql = "INSERT INTO T_TRANSACAO (DAT_TRANSACAO, VLR_TRANSACAO, TIP_TRANSACAO, DSC_TRANSACAO, COD_CONTA_ORIGEM, COD_CONTA_DESTINO) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = ConnectionFactory.getConnection();
+        try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setDate(1, java.sql.Date.valueOf(transacao.getData()));
@@ -212,7 +210,7 @@ public class TransacaoDAO  {
     }
 
     private void atualizarSaldosContas(Transacao transacao) throws SQLException {
-        this.connection = ConnectionFactory.getConnection();
+        this.connection = ConnectionManager.getConnection();
         ContaDAO contaDAO = new ContaDAO();
 
         // Obtém as contas envolvidas

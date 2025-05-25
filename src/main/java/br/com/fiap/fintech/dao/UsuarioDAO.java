@@ -1,6 +1,6 @@
 package br.com.fiap.fintech.dao;
 
-import br.com.fiap.fintech.factory.ConnectionFactory;
+import br.com.fiap.fintech.factory.ConnectionManager;
 import br.com.fiap.fintech.model.Usuario;
 
 import java.sql.Connection;
@@ -16,7 +16,7 @@ public class UsuarioDAO {
     private Connection connection;
 
     public UsuarioDAO() throws SQLException  {
-        this.connection = ConnectionFactory.getConnection();
+        this.connection = ConnectionManager.getConnection();
     }
 
     public void inserir(Usuario usuario) throws SQLException {

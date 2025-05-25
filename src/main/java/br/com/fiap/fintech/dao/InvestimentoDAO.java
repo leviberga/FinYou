@@ -1,5 +1,5 @@
 package br.com.fiap.fintech.dao;
-import br.com.fiap.fintech.factory.ConnectionFactory;
+import br.com.fiap.fintech.factory.ConnectionManager;
 import br.com.fiap.fintech.model.Investimento;
 import java.sql.*;
 import java.time.LocalDate;
@@ -12,7 +12,7 @@ public class InvestimentoDAO{
     private Connection connection;
 
     public InvestimentoDAO() throws SQLException {
-        this.connection = ConnectionFactory.getConnection();
+        this.connection = ConnectionManager.getConnection();
     }
 
     public void inserir(Investimento investimento) throws SQLException {

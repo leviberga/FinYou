@@ -1,8 +1,9 @@
-package br.com.fiap.fintech.service; // Certifique-se que este é seu pacote correto
+package br.com.fiap.fintech.service;
 
 import br.com.fiap.fintech.dao.ContaDAO;
 import br.com.fiap.fintech.dao.PessoaDAO;
 import br.com.fiap.fintech.dao.TransacaoDAO;
+import br.com.fiap.fintech.factory.DaoFactory;
 import br.com.fiap.fintech.model.Pessoa;
 import br.com.fiap.fintech.model.Transacao;
 import br.com.fiap.fintech.model.Usuario;
@@ -14,13 +15,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-// Importe um logger se for usar (ex: SLF4J)
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 
 public class DashboardService {
-
-    // private static final Logger logger = LoggerFactory.getLogger(DashboardService.class); // Exemplo com SLF4J
 
     private ContaDAO contaDAO;
     private TransacaoDAO transacaoDAO;
@@ -28,28 +24,21 @@ public class DashboardService {
 
     public DashboardService() {
         try {
-            this.contaDAO = new ContaDAO();
-            this.transacaoDAO = new TransacaoDAO();
-            this.pessoaDAO = new PessoaDAO();
-            // logger.info("DAOs do DashboardService inicializados com sucesso."); // Exemplo de log real
+            // Usando DaoFactory para obter as instâncias dos DAOs
+            this.contaDAO = DaoFactory.getContaDAO();
+            this.transacaoDAO = DaoFactory.getTransacaoDAO();
+            this.pessoaDAO = DaoFactory.getPessoaDAO();
         } catch (SQLException e) {
-            // logger.error("Falha CRÍTICA ao inicializar DAOs no DashboardService devido a SQLException.", e);
-            e.printStackTrace(); // Mantenha para desenvolvimento ou substitua por logger.error
+            e.printStackTrace();
             throw new RuntimeException("Erro ao inicializar camada de acesso a dados para o dashboard.", e);
         } catch (RuntimeException re) {
-            // logger.error("Falha CRÍTICA ao inicializar DAOs no DashboardService (RuntimeException).", re);
-            re.printStackTrace(); // Mantenha para desenvolvimento ou substitua por logger.error
+            re.printStackTrace();
             throw re;
         }
     }
 
     public Map<String, Object> carregarDadosDashboard(Usuario usuarioLogado) throws SQLException {
-
-
-
-
         if (usuarioLogado == null || usuarioLogado.getCodigo() == null) {
-            // logger.warn("Tentativa de carregar dados do dashboard com usuário logado nulo ou sem código.");
             throw new IllegalArgumentException("Usuário logado inválido ou não possui código de identificação.");
         }
 
@@ -63,51 +52,68 @@ public class DashboardService {
                 if (pessoa != null && pessoa.getNome() != null && !pessoa.getNome().trim().isEmpty()) {
                     dadosDashboard.put("nomeUsuario", pessoa.getNome());
                 } else {
-                    // logger.warn("Pessoa não encontrada ou nome vazio para codigoPessoa {}. Usando nome default.", usuarioLogado.getCodigoPessoa());
                     dadosDashboard.put("nomeUsuario", nomeUsuarioDefault);
                 }
             } else {
-                // logger.warn("codigoPessoa é null para o usuário {}. Usando nome default.", usuarioLogado.getEmail());
                 dadosDashboard.put("nomeUsuario", nomeUsuarioDefault);
             }
 
-            // 2. Saldo Total
-            BigDecimal saldoTotal = contaDAO.calcularSaldoTotalPorUsuario(usuarioLogado.getCodigo());
-            dadosDashboard.put("saldoTotal", saldoTotal != null ? saldoTotal : BigDecimal.ZERO);
+            // 2. Calcular totais usando as transações diretamente
+            List<Transacao> todasTransacoes = transacaoDAO.listarPorUsuario(usuarioLogado.getCodigo());
 
-            // 3. Total de Entradas e Saídas (para o mês atual)
-            LocalDate inicioPeriodo = LocalDate.now().withDayOfMonth(1);
-            LocalDate fimPeriodo = LocalDate.now(); // Inclui o dia de hoje
+            BigDecimal totalReceitas = BigDecimal.ZERO;
+            BigDecimal totalDespesas = BigDecimal.ZERO;
+            BigDecimal saldoTotal = BigDecimal.ZERO;
 
-            BigDecimal totalReceitas = transacaoDAO.calcularTotalReceitasPorUsuario(usuarioLogado.getCodigo(), inicioPeriodo, fimPeriodo);
-            BigDecimal totalDespesas = transacaoDAO.calcularTotalDespesasPorUsuario(usuarioLogado.getCodigo(), inicioPeriodo, fimPeriodo);
+            if (todasTransacoes != null && !todasTransacoes.isEmpty()) {
+                for (Transacao transacao : todasTransacoes) {
+                    BigDecimal valor = transacao.getValor() != null ? transacao.getValor() : BigDecimal.ZERO;
 
-            dadosDashboard.put("totalGanhos", totalReceitas != null ? totalReceitas : BigDecimal.ZERO);
-            dadosDashboard.put("totalGastos", totalDespesas != null ? totalDespesas : BigDecimal.ZERO);
-
-            // 4. Transações Recentes (ex: últimas 5)
-            List<Transacao> todasTransacoesUsuario = transacaoDAO.listarPorUsuario(usuarioLogado.getCodigo());
-            int limiteTransacoesRecentes = 5;
-            List<Transacao> transacoesRecentes;
-            if (todasTransacoesUsuario != null && !todasTransacoesUsuario.isEmpty()) {
-                transacoesRecentes = todasTransacoesUsuario.subList(0, Math.min(todasTransacoesUsuario.size(), limiteTransacoesRecentes));
-            } else {
-                transacoesRecentes = Collections.emptyList();
+                    if ("RECEITA".equalsIgnoreCase(transacao.getTipo())) {
+                        totalReceitas = totalReceitas.add(valor);
+                        saldoTotal = saldoTotal.add(valor);
+                    } else if ("DESPESA".equalsIgnoreCase(transacao.getTipo()) ||
+                            "TRANSFERENCIA".equalsIgnoreCase(transacao.getTipo())) {
+                        totalDespesas = totalDespesas.add(valor);
+                        saldoTotal = saldoTotal.subtract(valor);
+                    }
+                }
             }
-            dadosDashboard.put("transacoesRecentes", transacoesRecentes);
 
-            // 5. Colocar o próprio objeto usuário, caso precise de outros dados dele no JSP
+            // Definir os valores calculados
+            dadosDashboard.put("saldoTotal", saldoTotal);
+            dadosDashboard.put("totalGanhos", totalReceitas);
+            dadosDashboard.put("totalGastos", totalDespesas);
+
+            // 3. Todas as transações (em vez de apenas as recentes)
+            // Ordenar por data mais recente primeiro
+            if (todasTransacoes != null && !todasTransacoes.isEmpty()) {
+                todasTransacoes.sort((t1, t2) -> {
+                    if (t1.getData() == null && t2.getData() == null) return 0;
+                    if (t1.getData() == null) return 1;
+                    if (t2.getData() == null) return -1;
+                    return t2.getData().compareTo(t1.getData());
+                });
+                dadosDashboard.put("transacoesRecentes", todasTransacoes);
+            } else {
+                dadosDashboard.put("transacoesRecentes", Collections.emptyList());
+            }
+
+            // 4. Objeto usuário
             dadosDashboard.put("usuarioLogado", usuarioLogado);
 
+            // Log para debug
+            System.out.println("DEBUG - Dashboard calculado:");
+            System.out.println("Total de transações: " + (todasTransacoes != null ? todasTransacoes.size() : 0));
+            System.out.println("Total Receitas: " + totalReceitas);
+            System.out.println("Total Despesas: " + totalDespesas);
+            System.out.println("Saldo Total: " + saldoTotal);
+
         } catch (SQLException e) {
-            // logger.error("SQLException ao carregar dados do dashboard para o usuário ID: {}", usuarioLogado.getCodigo(), e);
-            e.printStackTrace(); // Mantenha para desenvolvimento ou substitua por logger.error
-            // Em vez de popular com defaults, lançar uma exceção para o Servlet tratar
-            // e exibir uma mensagem de erro mais clara para o usuário.
+            e.printStackTrace();
             throw new RuntimeException("Erro de banco de dados ao carregar informações do dashboard.", e);
         } catch (Exception e) {
-            // logger.error("Erro GERAL e inesperado ao carregar dados do dashboard para o usuário ID: {}", usuarioLogado.getCodigo(), e);
-            e.printStackTrace(); // Mantenha para desenvolvimento ou substitua por logger.error
+            e.printStackTrace();
             throw new RuntimeException("Erro inesperado ao processar informações do dashboard.", e);
         }
 

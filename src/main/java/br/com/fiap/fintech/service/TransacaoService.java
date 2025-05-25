@@ -1,7 +1,9 @@
+// TransacaoService.java
 package br.com.fiap.fintech.service;
 
 import br.com.fiap.fintech.dao.ContaDAO;
 import br.com.fiap.fintech.dao.TransacaoDAO;
+import br.com.fiap.fintech.factory.DaoFactory;
 import br.com.fiap.fintech.model.Transacao;
 import br.com.fiap.fintech.model.Usuario;
 import br.com.fiap.fintech.model.Conta;
@@ -16,8 +18,9 @@ public class TransacaoService {
     private ContaDAO contaDAO;
 
     public TransacaoService() throws SQLException {
-        this.transacaoDAO = new TransacaoDAO();
-        this.contaDAO = new ContaDAO();
+        // Usando DaoFactory para obter as instâncias dos DAOs
+        this.transacaoDAO = DaoFactory.getTransacaoDAO();
+        this.contaDAO = DaoFactory.getContaDAO();
     }
 
     /**
@@ -165,6 +168,5 @@ public class TransacaoService {
         }
         return conta;
     }
-
-
 }
+

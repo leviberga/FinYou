@@ -3,6 +3,7 @@ package br.com.fiap.fintech.service;
 import br.com.fiap.fintech.dao.ContaDAO;
 import br.com.fiap.fintech.dao.PessoaDAO;
 import br.com.fiap.fintech.dao.UsuarioDAO;
+import br.com.fiap.fintech.factory.DaoFactory;
 import br.com.fiap.fintech.model.Conta;
 import br.com.fiap.fintech.model.Pessoa;
 import br.com.fiap.fintech.model.Usuario;
@@ -18,10 +19,10 @@ public class CadastroService {
     private ContaDAO contaDAO;
 
     public CadastroService() throws SQLException {
-        // Em uma aplicação real, você poderia usar injeção de dependência
-        this.pessoaDAO = new PessoaDAO();
-        this.usuarioDAO = new UsuarioDAO();
-        this.contaDAO = new ContaDAO();
+        // Usando DaoFactory para obter as instâncias dos DAOs
+        this.pessoaDAO = DaoFactory.getPessoaDAO();
+        this.usuarioDAO = DaoFactory.getUsuarioDAO();
+        this.contaDAO = DaoFactory.getContaDAO();
     }
 
     /**
@@ -83,10 +84,7 @@ public class CadastroService {
         System.out.println("Pessoa associada: " + novaPessoa.getNome());
         System.out.println("Conta padrão criada: " + contaPadrao.getNome());
 
-        // Opcional: Fechar conexões se não forem gerenciadas por pool (não ideal aqui)
-        // pessoaDAO.fecharConexao();
-        // usuarioDAO.fecharConexao();
-        // contaDAO.fecharConexao();
+
 
         return novoUsuario;
     }

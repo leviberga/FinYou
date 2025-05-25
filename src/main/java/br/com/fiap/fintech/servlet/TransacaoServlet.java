@@ -75,18 +75,21 @@ public class TransacaoServlet extends HttpServlet {
             if ("inserir".equalsIgnoreCase(acao)) {
                 Transacao transacao = montarTransacao(req);
                 dao.inserir(transacao);
-                resp.sendRedirect("transacao?mensagem=Transação inserida com sucesso");
+                // Redireciona para o dashboard após inserir
+                resp.sendRedirect(req.getContextPath() + "/dashboard?mensagem=Transacao inserida com sucesso&refresh=true");
 
             } else if ("atualizar".equalsIgnoreCase(acao)) {
                 Transacao transacao = montarTransacao(req);
                 transacao.setCodigo(Integer.parseInt(req.getParameter("codigo")));
                 dao.atualizar(transacao);
-                resp.sendRedirect("transacao?mensagem=Transação atualizada com sucesso");
+                // Redireciona para o dashboard após atualizar
+                resp.sendRedirect(req.getContextPath() + "/dashboard?mensagem=Transação atualizada com sucesso&refresh=true");
 
             } else if ("excluir".equalsIgnoreCase(acao)) {
                 int codigo = Integer.parseInt(req.getParameter("codigo"));
                 dao.excluir(codigo);
-                resp.sendRedirect("transacao?mensagem=Transação excluída com sucesso");
+                // Redireciona para o dashboard após excluir
+                resp.sendRedirect(req.getContextPath() + "/dashboard?mensagem=Transação excluída com sucesso&refresh=true");
 
             } else {
                 req.setAttribute("erro", "Ação inválida.");

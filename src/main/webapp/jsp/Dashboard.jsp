@@ -38,6 +38,27 @@
             background-color: #e9ecef;
             transition: background-color 0.2s;
         }
+
+        /* Estilo para mensagem de sucesso */
+        .alert-success {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -58,6 +79,14 @@
 </nav>
 
 <div class="container mt-4">
+    <!-- Mensagem de sucesso -->
+    <c:if test="${not empty param.mensagem}">
+        <div id="mensagemSucesso" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Sucesso!</strong> <c:out value="${param.mensagem}"/>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
+
     <c:if test="${not empty mensagemErro}">
         <div class="alert alert-danger" role="alert">
             <c:out value="${mensagemErro}"/>
@@ -180,6 +209,34 @@
     document.addEventListener('DOMContentLoaded', function () {
         console.log('DOM carregado - inicializando dashboard');
 
+        // Verifica se precisa fazer refresh (quando vem de uma transação)
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldRefresh = urlParams.get('refresh');
+
+        if (shouldRefresh === 'true') {
+            // Remove o parâmetro refresh da URL sem recarregar a página
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({path: newUrl}, '', newUrl);
+
+            // Força atualização dos dados se necessário
+            setTimeout(() => {
+                // Você pode adicionar aqui uma chamada AJAX para recarregar os dados
+                // ou simplesmente confiar que o servlet já forneceu os dados atualizados
+                console.log('Dashboard atualizado após transação');
+            }, 100);
+        }
+
+        // Auto-hide da mensagem de sucesso após 5 segundos
+        const mensagemSucesso = document.getElementById('mensagemSucesso');
+        if (mensagemSucesso) {
+            setTimeout(() => {
+                mensagemSucesso.style.animation = 'slideOut 0.5s ease-in forwards';
+                setTimeout(() => {
+                    mensagemSucesso.style.display = 'none';
+                }, 500);
+            }, 5000);
+        }
+
         // Toggle para esconder/mostrar valores
         const toggleButton = document.getElementById("toggleButton");
         if (toggleButton) {
@@ -220,6 +277,22 @@
             }
         }, 100);
     });
+
+    // CSS adicional para animação de saída
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
 </body>
 </html>
