@@ -60,10 +60,8 @@ public class LoginServlet extends HttpServlet {
                 // 2. Armazenar o objeto Usuario na sessão
                 session.setAttribute("usuarioLogado", usuarioAutenticado);
 
-                // 3. Definir um tempo de inatividade máximo para a sessão (opcional, em segundos)
-                // session.setMaxInactiveInterval(30 * 60); // 30 minutos
-
-                // 4. Redirecionar para a página principal do usuário (dashboard)
+        
+                // 3. Redirecionar para a página principal do usuário (dashboard)
                 // Usar sendRedirect para seguir o padrão Post-Redirect-Get
                 response.sendRedirect(request.getContextPath() + "/dashboard"); // Ou qualquer página que seja seu dashboard
                 System.out.println("Login bem-sucedido para: " + email + ". Redirecionando para dashboard.");
