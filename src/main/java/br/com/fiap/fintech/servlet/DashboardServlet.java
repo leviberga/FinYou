@@ -1,6 +1,6 @@
-package br.com.fiap.fintech.servlet; // Certifique-se que este é seu pacote correto
+package br.com.fiap.fintech.servlet;
 
-// Escolha o namespace correto (javax ou jakarta) e remova o outro
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
