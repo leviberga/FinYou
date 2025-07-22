@@ -49,7 +49,7 @@ public class CadastroServlet extends HttpServlet {
         String senha = request.getParameter("senha");
         String confirmarSenha = request.getParameter("confirmarSenha"); // Para validação
 
-        // 2. Validações básicas (no servidor)
+        // 2. Validações (no servidor)
         if (nome == null || nome.trim().isEmpty() ||
                 cpf == null || cpf.trim().isEmpty() ||
                 dataNascimentoStr == null || dataNascimentoStr.trim().isEmpty() ||
@@ -71,7 +71,7 @@ public class CadastroServlet extends HttpServlet {
 
         LocalDate dataNascimento;
         try {
-            // O input type="date" do HTML5 envia no formato yyyy-MM-dd
+            // O input type="date" do HTML5 envia no formato yyyy-MM-dd atenção 
             dataNascimento = LocalDate.parse(dataNascimentoStr);
         } catch (DateTimeParseException e) {
             request.setAttribute("mensagemErro", "Formato de data de nascimento inválido. Use DD/MM/AAAA ou selecione no calendário.");
