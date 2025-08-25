@@ -30,4 +30,4 @@ O projeto foi desenvolvido como parte do curso de Análise e Desenvolvimento de 
 - *Bootstrap* 
 
 
-##  Desenvolvido por: Levi Bergamaski e Lanna Carvalho
+##  Desenvolvido por: Levi Bergamascki e Lanna Carvalho
