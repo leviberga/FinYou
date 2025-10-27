@@ -75,7 +75,7 @@ FinYou/
 > As demonstrações abaixo mostram as principais telas da aplicação.  
 
 ### 🏠 Tela inicial  
-![Tela Inicial](https://i.imgur.com/6L7Cya6.gif)
+![Tela Inicial](https://i.imgur.com/PldG1sx.gif)
 
 ### 🔐 Login e Cadastro  
 ![Login](https://github.com/user-attachments/assets/a83fa7ae-600a-41f8-896c-819cc93ec58e)  
